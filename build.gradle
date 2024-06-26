@@ -1,0 +1,68 @@
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.github.spotbugs' version '6.0.10'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.9.1'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.batch:spring-batch-test'
+
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.github.spotbugs:spotbugs-annotations:4.8.6'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+}
+
+spotbugs {
+    toolVersion = '4.8.4'
+    ignoreFailures = false
+    showStackTraces = true
+    showProgress = true
+    effort = Effort.valueOf('MAX')
+    reportLevel = Confidence.valueOf('MEDIUM')
+    maxHeapSize = '1g'
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/main/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
