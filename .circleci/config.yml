@@ -13,6 +13,10 @@ filter_only_branches: &filter_only_branches
         - /feature\/.*/
         - /bugfix\/.*/
         - /task\/.*/
+steps:
+  - &checkout_code
+    checkout:
+      path: $CIRCLE_PROJECT_REPONAME
 
 commands:
   build:
@@ -30,7 +34,7 @@ jobs:
       - image: cimg/openjdk:17.0.11
     working_directory: ~/project
     steps:
-      - checkout
+      - *checkout_code
       - build
       - store_artifacts:
           path: data-batch/build/reports/spotbugs/main/spotbugs.html
