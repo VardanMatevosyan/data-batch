@@ -31,12 +31,16 @@ jobs:
     steps:
       - checkout
       - build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
       - store_artifacts:
-          path: /project/data-batch/build/reports/spotbugs/main/spotbugs.html
+          path: data-batch/build/reports/spotbugs/main/spotbugs.html
       - store_artifacts:
-          path: /project/data-batch/build/reports/spotbugs/test/spotbugs.html
+          path: data-batch/build/reports/spotbugs/test/spotbugs.html
       - store_test_results:
-          path: /project/data-batch/build/test-results/test
+          path: data-batch/build/test-results/test
 
 workflows:
   version: 2
