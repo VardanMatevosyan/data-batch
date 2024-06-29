@@ -32,8 +32,7 @@ commands:
       - run:
           name: "Running build"
           command: |
-            pwd
-            echo 'step into repository project folder: ' $CIRCLE_PROJECT_REPONAME
+            echo 'Step into repository project folder : ' $CIRCLE_PROJECT_REPONAME
             cd ./$CIRCLE_PROJECT_REPONAME
             ./gradlew build
 
