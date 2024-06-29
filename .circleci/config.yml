@@ -21,19 +21,17 @@ commands:
       - run:
           name: "Running build"
           command: |
+            cd ./$CIRCLE_PROJECT_REPONAME
             ./gradlew build
 
 jobs:
   build:
     docker:
       - image: cimg/openjdk:17.0.11
+    working_directory: ~/project
     steps:
       - checkout
       - build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
       - store_artifacts:
           path: data-batch/build/reports/spotbugs/main/spotbugs.html
       - store_artifacts:
@@ -47,4 +45,5 @@ workflows:
     jobs:
       - build:
         <<: *filter_ignore_main_branches
+        <<: *filter_only_branches
 
