@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"}, justification = "This is spring DI")
+//@SuppressFBWarnings(value = {"EI_EXPOSE_REP2"}, justification = "This is spring DI")
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
