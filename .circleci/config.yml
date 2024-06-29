@@ -27,15 +27,16 @@ jobs:
   build:
     docker:
       - image: cimg/openjdk:17.0.11
+    working_directory: /project
     steps:
       - checkout
       - build
       - store_artifacts:
-          path: data-batch/build/reports/spotbugs/main/spotbugs.html
+          path: /project/data-batch/build/reports/spotbugs/main/spotbugs.html
       - store_artifacts:
-          path: data-batch/build/reports/spotbugs/test/spotbugs.html
+          path: /project/data-batch/build/reports/spotbugs/test/spotbugs.html
       - store_test_results:
-          path: data-batch/build/test-results/test
+          path: /project/data-batch/build/test-results/test
 
 workflows:
   version: 2
