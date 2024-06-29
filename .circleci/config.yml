@@ -1,0 +1,45 @@
+version: 2.1
+
+filter_ignore_main_branches: &filter_ignore_main_branches
+  filters:
+    branches:
+      ignore:
+        - dev
+        - main
+filter_only_branches: &filter_only_branches
+  filters:
+    branches:
+      only:
+        - /feature\/.*/
+        - main
+
+commands:
+  build:
+    description: "Building the application"
+    steps:
+      - run:
+          name: "Running build"
+          command: |
+            ./gradlew build
+
+jobs:
+  build:
+    docker:
+      - image: cimg/openjdk:17.0.11
+    steps:
+      - checkout
+      - build
+      - store_artifact:
+          path: data-batch/build/reports/spotbugs/main/spotbugs.html
+      - store_artifact:
+          path: data-batch/build/reports/spotbugs/test/spotbugs.html
+      - store_test_results:
+          path: data-batch/build/test-results/test
+
+workflows:
+  version: 2
+  build-and-check:
+    jobs:
+      - build:
+        <<: *filter_ignore_main_branches
+
