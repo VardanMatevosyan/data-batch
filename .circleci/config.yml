@@ -11,7 +11,8 @@ filter_only_branches: &filter_only_branches
     branches:
       only:
         - /feature\/.*/
-        - main
+        - /bugfix\/.*/
+        - /task\/.*/
 
 commands:
   build:
@@ -29,9 +30,9 @@ jobs:
     steps:
       - checkout
       - build
-      - store_artifact:
+      - store_artifacts:
           path: data-batch/build/reports/spotbugs/main/spotbugs.html
-      - store_artifact:
+      - store_artifacts:
           path: data-batch/build/reports/spotbugs/test/spotbugs.html
       - store_test_results:
           path: data-batch/build/test-results/test
