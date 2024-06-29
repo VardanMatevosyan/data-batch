@@ -1,5 +1,11 @@
 version: 2.1
 
+executors:
+  java17:
+    docker:
+      - image: cimg/openjdk:17.0.11
+    working_directory: ~/project
+
 filter_ignore_main_branches: &filter_ignore_main_branches
   filters:
     branches:
@@ -13,6 +19,7 @@ filter_only_branches: &filter_only_branches
         - /feature\/.*/
         - /bugfix\/.*/
         - /task\/.*/
+
 steps:
   - &checkout_code
     checkout:
@@ -32,9 +39,7 @@ commands:
 
 jobs:
   build:
-    docker:
-      - image: cimg/openjdk:17.0.11
-    working_directory: ~/project
+    executor: java17
     steps:
       - *checkout_code
       - build
