@@ -62,6 +62,16 @@ spotbugsMain {
     }
 }
 
+spotbugsTest {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs/test/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
+    }
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()
