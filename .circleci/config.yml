@@ -27,7 +27,6 @@ jobs:
   build:
     docker:
       - image: cimg/openjdk:17.0.11
-    working_directory: /project
     steps:
       - checkout
       - build
