@@ -1,5 +1,11 @@
 version: 2.1
 
+executors:
+  java17:
+    docker:
+      - image: cimg/openjdk:17.0.11
+    working_directory: ~/project
+
 filter_ignore_main_branches: &filter_ignore_main_branches
   filters:
     branches:
@@ -11,7 +17,13 @@ filter_only_branches: &filter_only_branches
     branches:
       only:
         - /feature\/.*/
-        - main
+        - /bugfix\/.*/
+        - /task\/.*/
+
+steps:
+  - &checkout_code
+    checkout:
+      path: $CIRCLE_PROJECT_REPONAME
 
 commands:
   build:
@@ -20,18 +32,19 @@ commands:
       - run:
           name: "Running build"
           command: |
+            echo 'Step into repository project folder : ' $CIRCLE_PROJECT_REPONAME
+            cd ./$CIRCLE_PROJECT_REPONAME
             ./gradlew build
 
 jobs:
   build:
-    docker:
-      - image: cimg/openjdk:17.0.11
+    executor: java17
     steps:
-      - checkout
+      - *checkout_code
       - build
-      - store_artifact:
+      - store_artifacts:
           path: data-batch/build/reports/spotbugs/main/spotbugs.html
-      - store_artifact:
+      - store_artifacts:
           path: data-batch/build/reports/spotbugs/test/spotbugs.html
       - store_test_results:
           path: data-batch/build/test-results/test
@@ -42,4 +55,5 @@ workflows:
     jobs:
       - build:
         <<: *filter_ignore_main_branches
+        <<: *filter_only_branches
 
