@@ -35,6 +35,42 @@ commands:
             echo 'Step into repository project folder : ' $CIRCLE_PROJECT_REPONAME
             cd ./$CIRCLE_PROJECT_REPONAME
             ./gradlew build
+  install_os_tools:
+    description: "Installing OS tools"
+    steps:
+      - run:
+          name: "Update linux repositories"
+          command: apt update
+      - run:
+          name: "Install wget"
+          command: apt -y install wget
+      - run:
+          name: "Install wkhtmltopdf"
+          command: apt -y install wkhtmltopdf
+  download_zap:
+    description: "Download ZAP"
+    steps:
+      - run:
+          name: "Download ZAP"
+          command: |
+           wget https://github.com/zaproxy/zaproxy/releases/download/v2.15.0/ZAP_2_15_0_unix.sh
+           tar -xvf ZAP_2.15.0_Linux.tar.gz
+           cd ZAP_2.15.0
+    run_zap:
+      description: "Running ZAP"
+      steps:
+        - run:
+            name: "Running ZAP and saving HTML report"
+            command: |
+             ./zap.sh -cmd -quickurl $DAST_TARGET_URL -quickprogress -quickout ../zap_report.html
+    convert_report_to_pdf:
+      description: "Convert zap report to pdf"
+      steps:
+        - run:
+            name: "Convert zap report to pdf"
+            command: |
+              cd ..
+              wkhtmltopdf zap_report.html zap_report.pdf
 
 jobs:
   build:
@@ -48,6 +84,15 @@ jobs:
           path: data-batch/build/reports/spotbugs/test/spotbugs.html
       - store_test_results:
           path: data-batch/build/test-results/test
+  security:
+    executor: java17
+    steps:
+      - install_os_tools
+      - download_zap
+      - run_zap
+      - convert_report_to_pdf
+      - store_artifacts:
+          path: zap_report.pdf
 
 workflows:
   version: 2
@@ -56,4 +101,7 @@ workflows:
       - build:
         <<: *filter_ignore_main_branches
         <<: *filter_only_branches
+#      - security:
+#          requires:
+#            - build
 
